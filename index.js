@@ -8,8 +8,12 @@ const job = new CronJob(process.env.CRON, function () {
 });
 job.start();
 
+// https://demo.hitbtc.com/settings/api-keys
 const API = APIFactory({
-  baseUrl: "https://api.demo.hitbtc.com/api/2",
+  baseUrl:
+    process.env.LIVE === "1"
+      ? "https://api.hitbtc.com/api/2"
+      : "https://api.demo.hitbtc.com/api/2",
   apiKey: process.env.API_KEY,
   secretKey: process.env.SECRET_KEY,
 });

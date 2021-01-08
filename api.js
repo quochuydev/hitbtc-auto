@@ -1,4 +1,5 @@
 const request = require("request");
+const _ = require("lodash");
 
 const APIFactory = ({ baseUrl, apiKey, secretKey }) => {
   const credentials = Buffer.from(apiKey + ":" + secretKey).toString("base64");
@@ -45,6 +46,10 @@ const APIFactory = ({ baseUrl, apiKey, secretKey }) => {
   }
 
   function makeUrl(endpoint, config) {
+    if (config.params) {
+      endpoint = compile(endpoint, config.params);
+    }
+
     let url = baseUrl + endpoint;
     if (config.query) {
       const objQuery = config.query;
@@ -60,8 +65,15 @@ const APIFactory = ({ baseUrl, apiKey, secretKey }) => {
         url = `${url}?${query}`;
       }
     }
-
     return url;
+  }
+
+  function compile(template, data) {
+    const result = template.replace(/{.+?}/g, function (matcher) {
+      const path = matcher.slice(1, -1).trim();
+      return _.get(data, path, "");
+    });
+    return result;
   }
 };
 

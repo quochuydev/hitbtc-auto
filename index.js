@@ -18,7 +18,10 @@ const API = APIFactory({
   secretKey: process.env.SECRET_KEY,
 });
 
-API.get("/order", { query: { test: 123 } })
-  .then(console.log)
-  .catch(console.log);
+API.get("/order").then(console.log).catch(console.log);
 API.get("/trading/balance").then(console.log).catch(console.log);
+
+// test
+// API.get("/order/{id}", { query: { test: 123 }, params: { id: 123123 } })
+//   .then(console.log)
+//   .catch(console.log);

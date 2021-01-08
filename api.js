@@ -3,24 +3,21 @@ const request = require("request");
 const APIFactory = ({ baseUrl, apiKey, secretKey }) => {
   const credentials = Buffer.from(apiKey + ":" + secretKey).toString("base64");
 
-  const call = (endpoint, method, config = {}, data) => {
-    return new Promise((resolve) => {
-      const url = baseUrl + endpoint;
-      if (config.query) {
-        const objQuery = config.query;
-        const query = Object.keys(objQuery)
-          .map((key) => {
-            if (objQuery[key]) {
-              return key + "=" + objQuery[key];
-            }
-          })
-          .filter((e) => !!e)
-          .join("&");
-        if (query) {
-          url = `${url}?${query}`;
-        }
-      }
+  const API = {
+    get: async (endpoint, config) => {
+      return await call(endpoint, "GET", config);
+    },
 
+    post: async (endpoint, data, config) => {
+      return await call(endpoint, "POST", config, data);
+    },
+  };
+
+  return API;
+
+  function call(endpoint, method, config = {}, data) {
+    return new Promise((resolve, reject) => {
+      const url = makeUrl(endpoint, config);
       const options = {
         url,
         method,
@@ -35,21 +32,37 @@ const APIFactory = ({ baseUrl, apiKey, secretKey }) => {
 
       request(options, function (err, res, result) {
         console.log(options.method, options.url, res.statusCode);
-        resolve(result);
+        if (err) {
+          return reject(err);
+        }
+        try {
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        }
       });
     });
-  };
+  }
 
-  const API = {
-    get: async (endpoint, config) => {
-      return await call(endpoint, "GET", config);
-    },
+  function makeUrl(endpoint, config) {
+    let url = baseUrl + endpoint;
+    if (config.query) {
+      const objQuery = config.query;
+      const query = Object.keys(objQuery)
+        .map((key) => {
+          if (objQuery[key]) {
+            return key + "=" + objQuery[key];
+          }
+        })
+        .filter((e) => !!e)
+        .join("&");
+      if (query) {
+        url = `${url}?${query}`;
+      }
+    }
 
-    post: async (endpoint, data, config) => {
-      return await call(endpoint, "POST", config, data);
-    },
-  };
-  return API;
+    return url;
+  }
 };
 
 module.exports = { APIFactory };

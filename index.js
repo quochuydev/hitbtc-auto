@@ -4,7 +4,13 @@ const { CronJob } = require("cron");
 const { APIFactory } = require("./api");
 
 const job = new CronJob(process.env.CRON, function () {
-  console.log("You will see this message every second");
+  // ETHUSD
+  //   EOSUSD
+  // API.get("/public/trades/ETHUSD")
+  //   .then((res) => {
+  //     console.log(new Date().toISOString(), res[0]);
+  //   })
+  //   .catch(console.log);
 });
 job.start();
 
@@ -18,14 +24,21 @@ const API = APIFactory({
   secretKey: process.env.SECRET_KEY,
 });
 
-API.get("/order").then(console.log).catch(console.log);
+API.get("/order")
+  .then((res) => {
+    console.log(res);
+  })
+  .catch(console.log);
 API.get("/trading/balance").then(console.log).catch(console.log);
 
 // test
-// API.post("/order/{id}", {
-//   query: { test: 123 },
-//   params: { id: 123123 },
-//   body: { name: new Date() },
+// API.post("/order", {
+//   body: {
+//     symbol: "EOSUSD",
+//     side: "buy",
+//     type: "market",
+//     quantity: 1,
+//   },
 // })
 //   .then(console.log)
 //   .catch(console.log);

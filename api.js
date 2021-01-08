@@ -23,15 +23,14 @@ const APIFactory = ({ baseUrl, apiKey, secretKey }) => {
         Authorization: "Basic " + credentials,
       };
 
-      if (config.body) {
-        options.body = JSON.stringify(config.body);
-      }
-
       const options = {
         url,
         method,
-        headers,
       };
+      if (config.body) {
+        options.body = JSON.stringify(config.body);
+      }
+      options.headers = headers;
 
       request(options, function (err, res, body) {
         console.log(options.method, options.url, res.statusCode);

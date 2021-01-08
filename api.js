@@ -9,37 +9,40 @@ const APIFactory = ({ baseUrl, apiKey, secretKey }) => {
       return await call(endpoint, "GET", config);
     },
 
-    post: async (endpoint, data, config) => {
-      return await call(endpoint, "POST", config, data);
+    post: async (endpoint, config) => {
+      return await call(endpoint, "POST", config);
     },
   };
 
   return API;
 
-  function call(endpoint, method, config = {}, data) {
+  function call(endpoint, method, config = {}) {
     return new Promise((resolve, reject) => {
       const url = makeUrl(endpoint, config);
+      const headers = {
+        Authorization: "Basic " + credentials,
+      };
+
+      if (config.body) {
+        options.body = JSON.stringify(config.body);
+      }
+
       const options = {
         url,
         method,
-        headers: {
-          Authorization: "Basic " + credentials,
-        },
+        headers,
       };
 
-      if (data) {
-        options.body = JSON.stringify(data);
-      }
-
-      request(options, function (err, res, result) {
+      request(options, function (err, res, body) {
         console.log(options.method, options.url, res.statusCode);
         if (err) {
           return reject(err);
         }
         try {
+          const result = JSON.parse(body);
           resolve(result);
         } catch (error) {
-          reject(error);
+          resolve(body);
         }
       });
     });

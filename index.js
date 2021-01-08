@@ -22,6 +22,10 @@ API.get("/order").then(console.log).catch(console.log);
 API.get("/trading/balance").then(console.log).catch(console.log);
 
 // test
-// API.get("/order/{id}", { query: { test: 123 }, params: { id: 123123 } })
+// API.post("/order/{id}", {
+//   query: { test: 123 },
+//   params: { id: 123123 },
+//   body: { name: new Date() },
+// })
 //   .then(console.log)
 //   .catch(console.log);

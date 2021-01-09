@@ -33,7 +33,7 @@ const APIFactory = ({ baseUrl, apiKey, secretKey }) => {
       options.headers = headers;
 
       request(options, function (err, res, body) {
-        console.log(options.method, options.url, res.statusCode);
+        config.showLog && console.log(options.method, options.url, res.statusCode);
         if (err) {
           return reject(err);
         }

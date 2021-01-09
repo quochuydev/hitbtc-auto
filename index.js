@@ -1,16 +1,24 @@
 require("dotenv").config();
 const { CronJob } = require("cron");
+const _ = require("lodash");
 
 const { APIFactory } = require("./api");
 
+const changes = []
+let buyChanges = []
+const sellChanges = []
+
 const job = new CronJob(process.env.CRON, function () {
   // ETHUSD
-  //   EOSUSD
-  // API.get("/public/trades/ETHUSD")
-  //   .then((res) => {
-  //     console.log(new Date().toISOString(), res[0]);
-  //   })
-  //   .catch(console.log);
+  // EOSUSD
+  API.get("/public/trades/ETHUSD")
+    .then((res) => {
+      // console.log(new Date().toISOString(), res[0]);
+      buyChanges.push(res[0].price)
+      buyChanges = _.takeRight(buyChanges, 5)
+      console.log(buyChanges)
+    })
+    .catch(console.log);
 });
 job.start();
 
@@ -39,6 +47,7 @@ API.get("/trading/balance").then(console.log).catch(console.log);
 //     type: "market",
 //     quantity: 1,
 //   },
+//   showLog: true
 // })
 //   .then(console.log)
 //   .catch(console.log);

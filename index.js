@@ -3,6 +3,7 @@ const { CronJob } = require("cron");
 const _ = require("lodash");
 
 const { APIFactory } = require("./api");
+require("./stream")();
 
 const changes = []
 let buyChanges = []
